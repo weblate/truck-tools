@@ -5,6 +5,42 @@ pub struct VecTrucksId {
     pub id: String,
 }
 
+pub struct VecTrucksListId {
+    pub truck_number: u16,
+    pub index: usize,
+    pub id: String,
+}
+
+#[allow(dead_code)]
+#[derive(Clone)]
+pub struct GarageInfo {
+    pub name: String,
+    pub index: usize,
+    pub total_vehicle: u8,
+    pub list_trucks: Vec<ValueGarage>,
+    pub list_drivers: Vec<ValueGarage>,
+}
+
+#[derive(Clone)]
+pub struct ValueGarage {
+    pub index: usize,
+    pub number: u8,
+    pub value: String,
+}
+
+#[derive(Serialize)]
+pub struct VecSaveTrucks {
+    pub truck_id: String,
+    pub truck_number: u16,
+    pub brand_name: String,
+}
+
+#[allow(dead_code)]
+pub struct VecTruckProfitLog {
+    pub index: usize,
+    pub id: String,
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct TruckBrandsATS {
     pub kenworth: Vec<Models>,

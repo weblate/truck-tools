@@ -6,6 +6,7 @@ import { Command } from "@tauri-apps/plugin-shell";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { invoke } from "@tauri-apps/api/core";
 import { LazyStore } from "@tauri-apps/plugin-store";
+import { locale } from "@tauri-apps/plugin-os";
 
 // types
 import {
@@ -26,12 +27,14 @@ import {
 	responseGetDeveloperValues,
 	licensePlateSaved,
 	listLicensePlateSaved,
+	ResponseSaveGameTrucks,
 } from "@/types/fileEditTypes";
 import {
 	IColorRgbToValidate,
 	IColorHsvToValidate,
 } from "@/types/fileEditTypes";
 import { GamesNames } from "@/types/ContexTypes";
+import { Langs } from "@/types/TranslationsTypes";
 import { IColor } from "react-color-palette";
 
 const STORE_FILE = ".settings.dat";
@@ -132,7 +135,9 @@ export const readProfileNames = async (
 		if (saves === 0) continue;
 
 		const profileObject: ProfileWithoutSaves = {
+			id: dirProfiles[i].id,
 			name: dirProfiles[i].name,
+			game,
 			hex: dirProfiles[i].hex,
 			savesCount: saves,
 			avatar: profileImg,
@@ -670,6 +675,57 @@ export const setRemoveTruckBadge = async (
 	return invoceRes.res;
 };
 
+export const setTruckKm = async (
+	dirSave: string,
+	km: string
+): Promise<boolean> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+		km,
+	};
+
+	const invoceRes = (await invoke(
+		"set_truck_km",
+		rustParams
+	)) as responseRustTypes;
+
+	return invoceRes.res;
+};
+
+export const getSaveGameTrucks = async (
+	dirSave: string
+): Promise<ResponseSaveGameTrucks> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+	};
+
+	const invoceRes = (await invoke(
+		"get_save_list_trucks",
+		rustParams
+	)) as ResponseSaveGameTrucks;
+
+	return invoceRes;
+};
+
+export const setPlayerTruck = async (
+	dirSave: string,
+	currentTruckId: string,
+	replaceTruckId: string
+): Promise<boolean> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+		currentTruckId,
+		replaceTruckId,
+	};
+
+	const invoceRes = (await invoke(
+		"set_player_truck",
+		rustParams
+	)) as responseRustTypes;
+
+	return invoceRes.res;
+};
+
 // App Variables store
 
 // theme store
@@ -804,4 +860,74 @@ export const getStoredOpasityStatus = async (): Promise<boolean> => {
 
 	if (typeof status === "boolean") return status;
 	return true;
+};
+
+// os locale value
+
+/**
+ * ## Compliance with BCP-47 is strictly required
+ * @param lang Language string `language`-`region`
+ * @returns The exact language or the closest available language
+ */
+export const mostSimilarLang = (lang: string | null): Langs => {
+	if (!lang) return "en-US";
+
+	switch (lang) {
+		case "en-US":
+		case "en-CL":
+		case "zh-Hans":
+		case "fr-FR":
+			return lang as Langs;
+	}
+
+	const splitLang = lang.split("-");
+	switch (splitLang[0]) {
+		case "en":
+			return "en-US";
+		case "es":
+			return "es-CL";
+		case "zh":
+			return "zh-Hans";
+		case "fr":
+			return "fr-FR";
+		default:
+			return "en-US";
+	}
+};
+
+export const storeOsLocale = async (lang: Langs) => {
+	const STORE = new LazyStore(STORE_FILE);
+	await STORE.set("lang", lang);
+	await STORE.save();
+};
+
+export const getStoredOsLocale = async (): Promise<Langs | null> => {
+	const STORE = new LazyStore(STORE_FILE);
+	const lang = await STORE.get("lang");
+
+	if (!lang) return null;
+
+	if (typeof lang === "string") {
+		return mostSimilarLang(lang);
+	}
+
+	return null;
+};
+
+export const getCurrentLocale = async (): Promise<Langs> => {
+	const locale_store = await getStoredOsLocale();
+
+	if (!locale_store) {
+		const lang_locale = await locale();
+
+		if (lang_locale) {
+			const lang_similar = mostSimilarLang(lang_locale);
+			await storeOsLocale(lang_similar);
+			return lang_similar;
+		}
+
+		return "en-US";
+	}
+
+	return locale_store;
 };

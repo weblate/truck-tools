@@ -1,5 +1,6 @@
-import { FC, useState, useEffect } from "react";
-import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
+import { FC, useState, useEffect, useContext } from "react";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+import { Button, Checkbox, Input, Select, SelectItem } from "@heroui/react";
 import { ColorPicker, IColor } from "react-color-palette";
 import { v4 as uuidv4 } from "uuid";
 import { getStoredLicensePlate, storeLicensePlate } from "@/utils/fileEdit";
@@ -33,6 +34,9 @@ const CustomLicensePlate: FC<CustomLicensePlateProps> = ({
 	setIsColorMargin,
 	modalOpen,
 }) => {
+	const { translations } = useContext(LocaleContext);
+	const { license_plate } = translations.components;
+
 	const [ListLicensePlates, setListLicensePlates] = useState<
 		licensePlateSaved[]
 	>([]);
@@ -157,8 +161,8 @@ const CustomLicensePlate: FC<CustomLicensePlateProps> = ({
 					<Input
 						className="w-fit"
 						size="sm"
-						label="License plate text"
-						placeholder="Enter license plate text"
+						label={license_plate.input_license_plate.label}
+						placeholder={license_plate.input_license_plate.placeholder}
 						value={plateText}
 						onValueChange={setUpperCase}
 						variant="bordered"
@@ -169,7 +173,7 @@ const CustomLicensePlate: FC<CustomLicensePlateProps> = ({
 							onValueChange={(value) => setIsColorMargin(value)}
 							size="sm"
 						>
-							Colored margin
+							{license_plate.input_colored_margin}
 						</Checkbox>
 						<Button
 							onPress={() =>
@@ -186,17 +190,19 @@ const CustomLicensePlate: FC<CustomLicensePlateProps> = ({
 							size="sm"
 							variant="bordered"
 						>
-							Store
+							{license_plate.btn_store}
 						</Button>
 					</div>
 				</div>
-				<div className="flex w-full flex-col justify-center gap-3">
+				<div className="flex w-full max-w-60 flex-col justify-center gap-3">
 					<Select
 						items={ListLicensePlates}
 						isLoading={isLoadingStore}
 						isDisabled={ListLicensePlates.length === 0}
-						label="Select a stored plate"
-						placeholder="Select license plate"
+						label={license_plate.input_license_plate_list_store.label}
+						placeholder={
+							license_plate.input_license_plate_list_store.placeholder
+						}
 						selectedKeys={selectedLicensePlate ? [selectedLicensePlate] : []}
 						onChange={(e) => setSelectedLicensePlate(e.target.value)}
 						variant="bordered"
@@ -211,7 +217,7 @@ const CustomLicensePlate: FC<CustomLicensePlateProps> = ({
 							size="sm"
 							variant="bordered"
 						>
-							Load
+							{license_plate.btn_load}
 						</Button>
 						<Button
 							isDisabled={selectedLicensePlate ? false : true}
@@ -220,14 +226,16 @@ const CustomLicensePlate: FC<CustomLicensePlateProps> = ({
 							size="sm"
 							variant="bordered"
 						>
-							Delete
+							{license_plate.btn_delete}
 						</Button>
 					</div>
 				</div>
 			</div>
 			<div className="flex h-auto justify-center gap-6">
 				<div className="space-y-2 text-center">
-					<p className="text-large font-bold">Background color</p>
+					<p className="text-large font-bold">
+						{license_plate.title_select_bg_color}
+					</p>
 					<div className="drop-shadow-lg">
 						<ColorPicker
 							height={100}
@@ -239,7 +247,9 @@ const CustomLicensePlate: FC<CustomLicensePlateProps> = ({
 					</div>
 				</div>
 				<div className="space-y-2 text-center">
-					<p className="text-large font-bold">Text color</p>
+					<p className="text-large font-bold">
+						{license_plate.title_select_text_color}
+					</p>
 					<div className="drop-shadow-lg">
 						<ColorPicker
 							height={100}

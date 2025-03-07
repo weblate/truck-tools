@@ -1,0 +1,533 @@
+{
+    "components": {
+        "alert_on_save_default": {
+            "error": "Đã xảy ra lỗi trong quá trình",
+            "succes": "Lưu thành công"
+        },
+        "license_plate": {
+            "btn_delete": "Xóa",
+            "btn_load": "Tải",
+            "btn_store": "Lưu trữ",
+            "input_colored_margin": "Lề màu",
+            "input_license_plate": {
+                "label": "Chữ biển số xe",
+                "placeholder": "Nhập chữ"
+            },
+            "input_license_plate_list_store": {
+                "label": "Chọn biển số đã lưu",
+                "placeholder": "Chọn biển số"
+            },
+            "title_select_bg_color": "Màu nền",
+            "title_select_text_color": "Màu chữ"
+        },
+        "player_profile": {
+            "btn_profile": "Tùy Chọn Hồ Sơ",
+            "dropdown": {
+                "profile_options": {
+                    "btn_backup_profile": {
+                        "description": "Tạo một bản dự phòng cho hồ sơ của bạn",
+                        "label": "Hồ Sơ Dự Phòng",
+                        "modal": {
+                            "btn_apply": "Dự phòng",
+                            "btn_close": "Đóng",
+                            "btn_open_folder": "Mở thư mục",
+                            "description": "Tạo một sao lưu dự phòng, nhớ nhập đích đến",
+                            "input_backup_destination": {
+                                "label": "Chọn thư mục đích",
+                                "placeholder": "Chọn thư mục đích"
+                            },
+                            "save_folder_dialog": {
+                                "filters_name": {
+                                    "zip": "Tệp Zip"
+                                },
+                                "title": "Chọn thư mục đích"
+                            },
+                            "title": "Hồ Sơ Dự Phòng"
+                        }
+                    },
+                    "btn_clone_profile": {
+                        "description": "Sao chép hồ sơ của bạn sang một hồ sơ mới",
+                        "label": "Nhân Bản Hồ Sơ",
+                        "modal": {
+                            "btn_apply": "Nhân bản",
+                            "btn_close": "Đóng",
+                            "description": "Nhập tên của hồ sơ bạn muốn sao chép. Thao tác này sẽ tạo một hồ sơ mới có cùng cài đặt với hồ sơ đã chọn.",
+                            "input_new_name": {
+                                "label": "Tên Hồ Sơ Mới",
+                                "placeholder": "Nhập tên mới cho hồ sơ của bạn"
+                            },
+                            "title": "Nhân Bản Hồ Sơ"
+                        }
+                    },
+                    "btn_copy_config": {
+                        "description": "Sao chép cài đặt từ hồ sơ khác",
+                        "label": "Sao Chép Cấu Hình",
+                        "modal": {
+                            "btn_apply": "Sao Chép Cấu Hình",
+                            "btn_close": "Đóng",
+                            "description": "Chọn cấu hình mà bạn muốn sao chép cài đặt vào, hãy nhớ rằng cài đặt của bạn sẽ được thay thế, chúng tôi khuyên bạn nên <b>tạo một bản sao lưu cấu hình của mình</b>.",
+                            "input_select_profile": {
+                                "label": "Hồ sơ",
+                                "placeholder": "Chọn một hồ sơ"
+                            },
+                            "title": "Sao Chép Cấu Hình"
+                        }
+                    },
+                    "btn_rename_profile": {
+                        "description": "Đổi tên hồ sơ của bạn",
+                        "label": "Đổi Tên Hồ Sơ",
+                        "modal": {
+                            "btn_apply": "Đổi tên",
+                            "btn_close": "Đóng",
+                            "description": "Bạn có thể đổi tên hồ sơ nhưng phải ít hơn 20 ký tự.",
+                            "input_new_name": {
+                                "label": "Tên hồ sơ",
+                                "placeholder": "Nhập tên mới cho hồ sơ của bạn"
+                            },
+                            "title": "Đổi tên hồ sơ"
+                        }
+                    },
+                    "title": "Tùy Chọn Hồ Sơ"
+                },
+                "save_game_options": {
+                    "btn_decrypt_save": {
+                        "description": "Giải mã bản lưu trò chơi đã chọn",
+                        "label": "Giải Mã Bản Lưu"
+                    },
+                    "btn_open_folder": {
+                        "description": "Mở thư mục lưu trò chơi đã chọn",
+                        "label": "Mở Thư Mục Lưu"
+                    },
+                    "title": "Tùy Chọn Lưu Trò Chơi"
+                }
+            },
+            "input_select_profile": {
+                "label": "Chọn hồ sơ",
+                "options": {
+                    "save_load": "Lưu"
+                },
+                "placeholder": "Chọn một hồ sơ"
+            },
+            "input_select_save": {
+                "label": "Chọn bản lưu",
+                "placeholder": "Chọn một bản lưu"
+            },
+            "no_selected_profile": "Không có hồ sơ được chọn",
+            "no_selected_save": "Không bản lưu được chọn",
+            "total_saves": "Lưu"
+        },
+        "profile_error": {
+            "btn_how_to": "Video Hướng Dẫn",
+            "btn_how_to_disable": "Cách tắt Steam Cloud",
+            "description": "Nhớ <b> tắt Steam Cloud</b> từ hồ sơ của bạn hoặc xác minh vị trí thư mục \"Tài liệu\" của bạn",
+            "title": "Không tìm thấy hồ sơ"
+        },
+        "updater": {
+            "alert_message": "Cài đặt không thành công. Hãy thử lại sau",
+            "btn_cancel": "Hủy",
+            "btn_manual_update": "Cập Nhật Thủ Công",
+            "btn_update_now": "Cập Nhật Ngay",
+            "downloading": "Đang tải xuống...",
+            "release_notes": "Ghi chú phát hành",
+            "title": "Đã có phiên bản mới",
+            "version": "Phiên bản:"
+        }
+    },
+    "menu_options": {
+        "about": {
+            "description": "Đây là một ứng dụng mã nguồn mở được tạo ra nhằm giúp người chơi ETS 2 & ATS chỉnh sửa Lưu trò chơi của họ một cách đơn giản và dễ dàng cho những ai không muốn chỉnh sửa các mã này theo cách thủ công.",
+            "tab_title": "Thông tin"
+        },
+        "profile": {
+            "add_experience": {
+                "description_card": "Thay đổi kinh nghiệm vào hồ sơ của bạn",
+                "label_card": "Thay đổi kinh nghiệm",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Nhập số lượng kinh nghiệm bạn muốn thêm vào hồ sơ của mình",
+                    "input_experience": {
+                        "label": "Kinh nghiệm",
+                        "placeholder": "Nhập số điểm kinh nghiệm bằng số"
+                    },
+                    "title": "Thay đổi kinh nghiệm"
+                }
+            },
+            "add_money": {
+                "description_card": "Thêm tiền vào hồ sơ của bạn",
+                "label_card": "Thay đổi tiền",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Thêm số tiền bạn muốn vào hồ sơ của bạn",
+                    "input_money": {
+                        "label": "Tiền",
+                        "placeholder": "Nhập số tiền tính bằng EUR"
+                    },
+                    "title": "Thay đổi tiền"
+                }
+            },
+            "dealer_visited": {
+                "description_card": "Đặt tất cả trạng thái đại lý vào hồ sơ của bạn",
+                "label_card": "Khám phá tất cả các đại lý",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Chọn trạng thái của tất cả các đại lý trong hồ sơ của bạn",
+                    "input_dealer_status": {
+                        "label": "Thành phố đã ghé thăm",
+                        "options": {
+                            "unvisit_all": "Chưa ghé thăm tất cả các đại lý",
+                            "visit_all": "Đã ghé thăm tất cả các đại lý"
+                        }
+                    },
+                    "title": "Khám phá tất cả các đại lý"
+                }
+            },
+            "garage_status": {
+                "description_card": "Đặt bất kỳ trạng thái gara nào vào hồ sơ của bạn",
+                "label_card": "Mua tất cả gara",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Chọn trạng thái gara muốn áp dụng vào hồ sơ của mình",
+                    "input_garage_status": {
+                        "label": "Tình trạng gara",
+                        "options": {
+                            "large_garage": "Gara lớn",
+                            "medium_garage": "Gara hạng trung",
+                            "sell_garage": "Bán gara",
+                            "small_garage": "Gara nhỏ"
+                        }
+                    },
+                    "title": "Mua tất cả gara"
+                }
+            },
+            "skills_points": {
+                "description_card": "Đặt kỹ năng kinh nghiệm vào hồ sơ của bạn",
+                "label_card": "Đặt kỹ năng kinh nghiệm",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Nhập số lượng kinh nghiệm bạn cần",
+                    "eco_driving": "Lái xe sinh thái",
+                    "fragile_cargo": "Hàng dễ vỡ",
+                    "high_value_cargo": "Hàng có giá trị cao",
+                    "input_skills_points": {
+                        "corrosive": "Chất ăn mòn",
+                        "explosives": "Thuốc nổ",
+                        "flammable_liquids": "Chất lỏng dễ cháy",
+                        "flammable_solids": "Chất rắn dễ cháy",
+                        "gases": "Khí",
+                        "label": "ADR",
+                        "placeholder": "Chọn ADR",
+                        "toxic_and_infectious": "Độc hại và truyền nhiễm"
+                    },
+                    "just_in_time_delivery": "Giao hàng đúng hẹn",
+                    "long_distance": "Khoảng cách dài",
+                    "title": "Đặt Kỹ Năng Kinh Nghiệm"
+                }
+            },
+            "tab_title": "Hồ sơ",
+            "visited_cities": {
+                "description_card": "Đặt bất kỳ trạng thái nào đã ghé thăm thành phố vào hồ sơ của bạn",
+                "label_card": "Khám phá tất cả thành phố",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Chọn trạng thái của tất cả các thành phố đã ghé thăm",
+                    "input_city_status": {
+                        "label": "Thành phố đã ghé thăm",
+                        "options": {
+                            "unvisit_all": "Chưa ghé thăm tất cả thành phố",
+                            "visit_all": "Đã ghé thăm tất cả thành phố"
+                        }
+                    },
+                    "title": "Khám phá tất cả thành phố"
+                }
+            }
+        },
+        "settings": {
+            "btn_reset": "Đặt Lại Cài Đặt",
+            "document_dialog_title": "Chọn thư mục lưu trữ chương trình của bạn",
+            "input_change_language": {
+                "label": "Thay đổi ngôn ngữ",
+                "placeholder": "Chọn ngôn ngữ"
+            },
+            "input_change_theme": {
+                "label": "Thay đổi chủ đề",
+                "options": {
+                    "dark": "Tối",
+                    "light": "Sáng",
+                    "system": "Hệ thống"
+                },
+                "placeholder": "Chọn chủ đề"
+            },
+            "input_document_folder": {
+                "label": "Thư mục tài liệu",
+                "placeholder": "Nhập thư mục tài liệu"
+            },
+            "input_enable_128_slots": "Kích hoạt 128 chỗ chế độ đoàn xe",
+            "input_enable_console": "Bật bảng điều khiển và chế độ nhà phát triển",
+            "input_opacity_profile": "Làm mờ phần chọn hồ sơ",
+            "tab_title": "Cài đặt",
+            "title": "Cài đặt"
+        },
+        "trailers": {
+            "license_plate": {
+                "description_card": "Đổi biển số trailer",
+                "label_card": "Đổi biển số moóc kéo",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Nhập biển số mới của moóc kéo",
+                    "title": "Đổi biển số moóc kéo"
+                }
+            },
+            "modify_job_weight": {
+                "description_card": "Điều chỉnh cân nặng công việc",
+                "label_card": "Sửa đổi cân nặng công việc",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Điều này sẽ sửa đổi trọng lượng công việc hiện tại của bạn thành công việc bạn xác định ở đây. Hãy nhớ rằng bạn sẽ cần phải có một công việc tích cực gắn liền với xe tải của mình",
+                    "input_weight": {
+                        "label": "Cân nặng kg",
+                        "placeholder": "Nhập cân nặng kg"
+                    },
+                    "title": "Thay đổi trọng lượng tải"
+                }
+            },
+            "modify_trailer_weight": {
+                "description_card": "Sửa đổi trọng lượng xe moóc, chỉ áp dụng một lần",
+                "label_card": "Thay đổi trọng lượng xe moóc",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Điều này sửa đổi trọng lượng của xe kéo của bạn theo 2 tham số. Thông thường, chassis_mass được sử dụng nhưng bạn cũng có thể chỉnh sửa body_mass (body_mass mặc định là 0)",
+                    "input_body_mass": {
+                        "label": "Khối lượng bản thân tính bằng kg",
+                        "placeholder": "Nhập khối lượng bản thân tính bằng kg"
+                    },
+                    "input_chassis_mass": {
+                        "label": "Khối lượng khung tính bằng kg",
+                        "placeholder": "Nhập khối lượng khung xe tính bằng kg"
+                    },
+                    "title": "Thay đổi trọng lượng xe moóc"
+                }
+            },
+            "repair_all_trailer": {
+                "description_card": "Sửa chữa tất cả các moóc kéo bạn có",
+                "label_card": "Sửa chữa tất cả các moóc kéo",
+                "modal": {
+                    "btn_apply": "Sửa chữa",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Sửa chữa tất cả các moóc kéo bạn sở hữu",
+                    "title": "Sửa chữa tất cả các moóc kéo"
+                }
+            },
+            "repair_trailer": {
+                "description_card": "Sửa chữa moóc kéo hiện tại",
+                "label_card": "Sửa chữa moóc kéo",
+                "modal": {
+                    "btn_apply": "Sửa chữa",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Sửa chữa rơ-moóc hiện đang được gắn vào rơ-moóc",
+                    "title": "Sửa chữa moóc kéo"
+                }
+            },
+            "tab_title": "Moóc kéo",
+            "unlock_trailer_country": {
+                "description_card": "Mở khóa việc chặn moóc kéo trong khu vực",
+                "label_card": "Bỏ chặn moóc kéo theo quốc gia",
+                "modal": {
+                    "btn_apply": "Mở khóa",
+                    "btn_close": "Đóng",
+                    "btn_how_to_use": "Cách sử dụng",
+                    "btn_open": "Mở",
+                    "description": "Mở khóa moóc kéo của bạn ở tất cả các quốc gia nếu nó bị trò chơi chặn",
+                    "title": "Mở Khóa Moóc Kéo Hiện Tại",
+                    "warning_message": {
+                        "message": "Bạn phải gắn rơ-moóc vào xe tải để những thay đổi có hiệu lực.",
+                        "title": "Nhớ"
+                    }
+                }
+            }
+        },
+        "trucks": {
+            "change_truck_engine": {
+                "description_card": "Thay đổi động cơ của xe tải",
+                "label_card": "Thay đổi động cơ xe tải",
+                "modal": {
+                    "btn_apply": "Thay đổi",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "btn_remove_badge": "Gỡ huy hiệu",
+                    "description": "Thay đổi động cơ xe tải của bạn theo lựa chọn của bạn",
+                    "input_brands": {
+                        "label": "Hãng",
+                        "placeholder": "Chọn hãng xe tải"
+                    },
+                    "input_engines": {
+                        "label": "Động cơ",
+                        "placeholder": "Chọn động cơ xe tải"
+                    },
+                    "input_models": {
+                        "label": "Mẫu",
+                        "placeholder": "Chọn mẫu xe tải"
+                    },
+                    "title": "Thay đổi động cơ xe tải",
+                    "warning_message": {
+                        "message": "Nếu bạn thấy bất kỳ <b>logo nào nổi hoặc ở vị trí sai</b> trên xe tải, bạn có thể xóa logo đó bằng nút bên dưới.",
+                        "title": "Nhớ"
+                    }
+                }
+            },
+            "change_truck_transmission": {
+                "description_card": "Thay đổi hộp số của xe tải",
+                "label_card": "Thay đổi hộp số xe tải",
+                "modal": {
+                    "btn_apply": "Thay đổi",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "btn_remove_badge": "Gỡ huy hiệu",
+                    "description": "Thay đổi hộp số của xe tải của bạn thành hộp số bạn chọn",
+                    "input_brands": {
+                        "label": "Hãng",
+                        "placeholder": "Chọn hãng xe tải"
+                    },
+                    "input_models": {
+                        "label": "Mẫu",
+                        "placeholder": "Chọn mẫu xe tải"
+                    },
+                    "input_transmissions": {
+                        "label": "Hộp số",
+                        "placeholder": "Chọn hộp số xe tải"
+                    },
+                    "title": "Thay đổi hộp số xe tải",
+                    "warning_message": {
+                        "message": "Nếu bạn thấy bất kỳ <b>logo nào nổi hoặc ở vị trí sai</b> trên xe tải, bạn có thể xóa nó bằng nút bên dưới.",
+                        "title": "Nhớ"
+                    }
+                }
+            },
+            "fill_all_trucks_fuel": {
+                "description_card": "Tiếp nhiên liệu cho tất cả các xe tải của đội xe",
+                "label_card": "Đổ đầy nhiên liệu tất cả xe tải",
+                "modal": {
+                    "btn_apply": "Đổ Xăng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Tùy chọn này sẽ cho phép bạn tiếp nhiên liệu cho tất cả các xe tải đã mua của bạn",
+                    "title": "Đổ đầy nhiên liệu tất cả xe tải"
+                }
+            },
+            "fill_fuel": {
+                "description_card": "Đổ đầy nhiên liệu vào xe tải hiện tại",
+                "label_card": "Đổ đầy nhiên liệu",
+                "modal": {
+                    "btn_apply": "Đổ Xăng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Tiếp nhiên liệu hoàn toàn cho xe tải của bạn",
+                    "title": "Đổ đầy nhiên liệu"
+                }
+            },
+            "infinite_fuel": {
+                "description_card": "Nhiên liệu vô hạn trên xe tải hiện tại",
+                "label_card": "Nhiên liệu vô hạn trên xe tải hiện tại",
+                "modal": {
+                    "btn_apply": "Đổ Xăng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "btn_restore_fuel": "Khôi phục nhiên liệu",
+                    "description": "Chính xác nhiên liệu không phải là vô tận nhưng nó dành cho khoảng 5.000.000 KM (tùy xe)",
+                    "title": "Nhiên liệu vô hạn trên xe tải hiện tại",
+                    "warning_message": {
+                        "message": "<b>Tắt \"Mức tiêu thụ nhiên liệu thực tế\"</b> trong phần \"Trò chơi\" của bạn để chức năng này có hiệu lực.",
+                        "title": "Nhớ"
+                    }
+                }
+            },
+            "license_plate": {
+                "description_card": "Thay đổi biển số xe tải",
+                "label_card": "Thay đổi biển số xe tải",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Nhập biển số xe tải mới. Hãy nhớ bỏ biển số xe của bạn khỏi Word of Trucks",
+                    "title": "Thay đổi biển số xe tải"
+                }
+            },
+            "repair_all_trucks": {
+                "description_card": "Sửa chữa tất cả các đội xe tải",
+                "label_card": "Sửa chữa tất cả xe tải",
+                "modal": {
+                    "btn_apply": "Sửa chữa",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Sửa chữa tất cả xe tải bạn có trong công ty của bạn",
+                    "title": "Sửa chữa tất cả xe tải"
+                }
+            },
+            "repair_truck": {
+                "description_card": "Sửa chữa xe tải hiện tại của bạn",
+                "label_card": "Sửa chữa xe tải",
+                "modal": {
+                    "btn_apply": "Sửa chữa",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "description": "Sửa chữa hư hỏng cho xe tải của bạn",
+                    "title": "Sửa chữa xe tải"
+                }
+            },
+            "tab_title": "Xe tải",
+            "change_km": {
+                "description_card": "Thay đổi số dặm trên xe tải của bạn",
+                "label_card": "Thay đổi số dặm xe tải",
+                "modal": {
+                    "btn_apply": "Áp dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Mở",
+                    "input_km": {
+                        "label": "Khoảng cách tính bằng km",
+                        "placeholder": "Khoảng cách tính bằng km"
+                    },
+                    "description": "Thay đổi số dặm trên xe tải của bạn",
+                    "title": "Thay đổi số dặm xe tải"
+                }
+            },
+            "change_truck": {
+                "description_card": "Đổi xe tải của bạn mà không cần đến nhà để xe",
+                "label_card": "Đổi xe tải trên đường",
+                "modal": {
+                    "btn_apply": "Thay đổi",
+                    "btn_how_to_use": "Cách sử dụng",
+                    "btn_close": "Đóng",
+                    "btn_open": "Open",
+                    "description": "Đổi xe tải của bạn mà không cần đến nhà để xe",
+                    "title": "Đổi xe tải của bạn trên đường",
+                    "select_label": "Xe tải",
+                    "select_error": "Không tìm thấy xe tải",
+                    "select_placeholder": "Chọn một xe tải",
+                    "warning_message": {
+                        "title": "Cảnh báo",
+                        "message": "Nếu bạn đã tạo một lần lưu mới, hãy nhớ cập nhật danh sách các xe tải để bạn không gặp lỗi khi thay đổi xe tải."
+                    }
+                }
+            }
+        }
+    }
+}

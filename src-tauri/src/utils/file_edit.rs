@@ -2,7 +2,7 @@ use super::decrypt_saves::decrypt_file;
 use crate::structs::file_path::FilePath;
 use crate::structs::vec_save_games::{VecProfileDir, VecSaveGames};
 use hex::decode;
-use std::fs::{read_dir, rename, write, File};
+use std::fs::{File, read_dir, rename, write};
 use std::io::Read;
 use std::path::Path;
 use uuid::Uuid;
@@ -262,7 +262,9 @@ pub async fn get_list_save_game_dirs(path: String) -> Option<Vec<VecProfileDir>>
             Err(_) => continue,
         };
 
+        let uuid: String = Uuid::new_v4().to_string();
         result.push(VecProfileDir {
+            id: uuid,
             name: profile_path_name,
             hex: profile_path_hex.to_string(),
             dir: item_path,
