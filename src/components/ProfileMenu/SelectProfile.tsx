@@ -1,15 +1,22 @@
 import { JSX, useContext } from "react";
+
+// UI
+import { Tabs, Tab } from "@heroui/tabs";
+import { Card, CardBody } from "@heroui/card";
+
+// Hooks
 import { ProfileContex } from "@/hooks/useProfileContex";
 import { DarkModeContex } from "@/hooks/useDarkModeContex";
-import { Card, CardBody, Tabs, Tab } from "@nextui-org/react";
-import classNames from "classnames";
 import ProfileCardBody from "@/components/ProfileMenu/ProfileCardBody";
 import ProfileError from "@/components/ProfileMenu/ProfileError";
 
-// types
+// Utils
+import classNames from "classnames";
+
+// Types
 import { GamesNames } from "@/types/ContexTypes";
 
-// images
+// Images
 import ets2 from "@/static/icons/games/ets2.webp";
 import ats from "@/static/icons/games/ats.webp";
 
@@ -47,7 +54,7 @@ const SelectProfile = () => {
 	};
 
 	return (
-		<div className="fixed bottom-0 z-10 mb-2 mt-auto flex w-full justify-center gap-2">
+		<div className="fixed bottom-0 z-10 mt-auto mb-2 flex w-full justify-center gap-2">
 			{profilesNotFound && <ProfileError />}
 			<div
 				className={classNames(

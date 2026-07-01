@@ -1,19 +1,26 @@
 import { useState, useContext, useEffect, FC } from "react";
-import { ProfileContex } from "@/hooks/useProfileContex";
+
+// UI
+import { Input } from "@heroui/input";
+import { Divider } from "@heroui/divider";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	Input,
-} from "@nextui-org/react";
-import { setNewProfileName } from "@/utils/fileEdit";
+} from "@heroui/modal";
+import { Button } from "@heroui/button";
 import AlertSave from "@/components/AlertSave";
 
-// icons
+// Utils
+import { setNewProfileName } from "@/utils/fileEdit";
+
+// Hooks
+import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Icons
 import { IconPencil, IconDeviceFloppy } from "@tabler/icons-react";
 
 interface completedProps {
@@ -28,6 +35,9 @@ interface ModalProps {
 
 const RenameProfile: FC<ModalProps> = ({ isOpen, onOpenChange }) => {
 	const { selectedProfile, reloadProfiles } = useContext(ProfileContex);
+	const { translations } = useContext(LocaleContext);
+	const { btn_rename_profile } =
+		translations.components.player_profile.dropdown.profile_options;
 
 	const [ProfileName, setProfileName] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -57,10 +67,11 @@ const RenameProfile: FC<ModalProps> = ({ isOpen, onOpenChange }) => {
 	};
 
 	useEffect(() => {
-		if (selectedProfile) {
+		if (isOpen && selectedProfile) {
+			// eslint-disable-next-line
 			setProfileName(selectedProfile.name);
 		}
-	}, [selectedProfile]);
+	}, [selectedProfile, isOpen]);
 
 	return (
 		<Modal
@@ -78,20 +89,19 @@ const RenameProfile: FC<ModalProps> = ({ isOpen, onOpenChange }) => {
 				{(onClose) => (
 					<>
 						<ModalHeader className="flex flex-col gap-1">
-							Rename profile
+							{btn_rename_profile.modal.title}
 						</ModalHeader>
 						<Divider />
 						<ModalBody className="py-1">
-							<p>
-								You can rename the profile, but it must be less than 20
-								characters.
-							</p>
+							<p>{btn_rename_profile.modal.description}</p>
 							<Input
 								className="mt-1"
 								isInvalid={ProfileName.length === 0 || ProfileName.length > 20}
 								startContent={<IconPencil />}
-								label="Profile name"
-								placeholder="Enter profile name"
+								label={btn_rename_profile.modal.input_new_name.label}
+								placeholder={
+									btn_rename_profile.modal.input_new_name.placeholder
+								}
 								value={ProfileName}
 								isDisabled={selectedProfile ? false : true}
 								onValueChange={(value) => setProfileName(value)}
@@ -100,8 +110,8 @@ const RenameProfile: FC<ModalProps> = ({ isOpen, onOpenChange }) => {
 							<AlertSave
 								message={
 									completed.error
-										? "An error occurred in the process"
-										: "Saved successfully"
+										? translations.components.alert_on_save_default.error
+										: translations.components.alert_on_save_default.succes
 								}
 								error={completed.error}
 								show={completed.completed}
@@ -112,7 +122,7 @@ const RenameProfile: FC<ModalProps> = ({ isOpen, onOpenChange }) => {
 						</ModalBody>
 						<ModalFooter>
 							<Button color="danger" variant="light" onPress={onClose}>
-								Close
+								{btn_rename_profile.modal.btn_close}
 							</Button>
 							<Button
 								endContent={<IconDeviceFloppy />}
@@ -121,7 +131,7 @@ const RenameProfile: FC<ModalProps> = ({ isOpen, onOpenChange }) => {
 								onPress={onClickApply}
 								isDisabled={selectedProfile ? false : true}
 							>
-								Rename
+								{btn_rename_profile.modal.btn_apply}
 							</Button>
 						</ModalFooter>
 					</>

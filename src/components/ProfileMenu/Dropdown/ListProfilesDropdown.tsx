@@ -1,23 +1,31 @@
-import { FC } from "react";
-import { Select, SelectItem, Image } from "@nextui-org/react";
+import { FC, useContext } from "react";
+import { LocaleContext } from "@/hooks/useLocaleContext";
 
-// icons
+// UI
+import { Image } from "@heroui/image";
+import { Select, SelectItem } from "@heroui/select";
+
+// Icons
 import { IconUserCircle } from "@tabler/icons-react";
 
-// types
+// Types
 import { ProfileWithoutSaves } from "@/types/SaveGameTypes";
 import { ProfileTypesContext } from "@/types/ContexTypes";
 
 const ListProfilesDropdown: FC<ProfileTypesContext> = ({
+	isProfilesLoading,
 	listProfiles,
 	selectedProfile,
 	setProfile,
 }) => {
-	const onClickProfile = (profileHex: string) => {
-		if (!profileHex) return;
+	const { translations } = useContext(LocaleContext);
+	const { player_profile } = translations.components;
+
+	const onClickProfile = (id: string) => {
+		if (!id) return;
 
 		const profileFind = listProfiles.find(
-			(p) => p.hex === profileHex
+			(p) => p.id === id
 		) as ProfileWithoutSaves;
 
 		setProfile(profileFind);
@@ -26,33 +34,30 @@ const ListProfilesDropdown: FC<ProfileTypesContext> = ({
 	return (
 		<Select
 			isDisabled={listProfiles.length === 0}
-			errorMessage={listProfiles.length > 0 ? undefined : "No profiles found"}
-			isLoading={listProfiles.length === 0}
+			errorMessage={
+				listProfiles.length > 0 ? undefined : player_profile.no_selected_profile
+			}
+			isLoading={isProfilesLoading}
 			isInvalid={selectedProfile ? false : true}
 			items={listProfiles}
-			selectedKeys={selectedProfile ? [selectedProfile.hex] : []}
+			selectedKeys={selectedProfile ? [selectedProfile.id] : []}
 			onChange={(e) => onClickProfile(e.target.value)}
-			label="Profiles"
-			placeholder="Select a profile"
+			label={player_profile.input_select_profile.label}
+			placeholder={player_profile.input_select_profile.placeholder}
 			labelPlacement="inside"
 			variant="bordered"
 			size="md"
 		>
 			{(profile) => (
-				<SelectItem key={profile.hex} textValue={profile.name}>
+				<SelectItem key={profile.id} textValue={profile.name}>
 					<div className="flex items-center gap-2">
-						<div className="w-[30px]">
+						<div className="w-7.5">
 							{profile.avatar ? (
 								<Image
 									src={profile.avatar}
 									alt="profile avatar select"
-									radius="full"
-									loading="lazy"
-									style={{
-										zoom: 0.31,
-										objectFit: "none",
-										objectPosition: "0% 0%",
-									}}
+									radius="lg"
+									loading="eager"
 								/>
 							) : (
 								<IconUserCircle size={30} />
@@ -60,8 +65,8 @@ const ListProfilesDropdown: FC<ProfileTypesContext> = ({
 						</div>
 						<div className="flex flex-col">
 							<span className="text-small">{profile.name}</span>
-							<span className="text-tiny text-default-400">
-								{profile.savesCount} saves
+							<span className="text-tiny text-default-500">
+								{profile.savesCount} {player_profile.total_saves}
 							</span>
 						</div>
 					</div>

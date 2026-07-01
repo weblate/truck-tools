@@ -6,6 +6,7 @@ import { Command } from "@tauri-apps/plugin-shell";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { invoke } from "@tauri-apps/api/core";
 import { LazyStore } from "@tauri-apps/plugin-store";
+import { locale } from "@tauri-apps/plugin-os";
 
 // types
 import {
@@ -26,17 +27,21 @@ import {
 	responseGetDeveloperValues,
 	licensePlateSaved,
 	listLicensePlateSaved,
+	ResponseSaveGameTrucks,
+	ResponseSaveGameTrailers,
+	ResponseSaveCameraPositions,
 } from "@/types/fileEditTypes";
 import {
 	IColorRgbToValidate,
 	IColorHsvToValidate,
 } from "@/types/fileEditTypes";
 import { GamesNames } from "@/types/ContexTypes";
+import { Langs } from "@/types/TranslationsTypes";
 import { IColor } from "react-color-palette";
 
 const STORE_FILE = ".settings.dat";
-const ATS_DIR = "American Truck Simulator";
-const ETS2_DIR = "Euro Truck Simulator 2";
+export const ATS_DIR = "American Truck Simulator";
+export const ETS2_DIR = "Euro Truck Simulator 2";
 
 const getProfileImage = async (path: string): Promise<string | undefined> => {
 	const imgPath = await join(path, "online_avatar.png");
@@ -78,6 +83,13 @@ export const openExplorer = async (path: string) => {
 	await command.execute();
 };
 
+export const getDocsDir = async (): Promise<string> => {
+	const storeDocsDir = await getStoredDocumentDir();
+	const docsDirSystem = await documentDir();
+
+	return storeDocsDir || docsDirSystem;
+};
+
 export const getListSaves = async (
 	profilePath: string
 ): Promise<SaveGame[] | null> => {
@@ -116,9 +128,7 @@ export const readProfileNames = async (
 ): Promise<ProfileWithoutSaves[]> => {
 	const readDirProfiles = (game === "ets2" ? ETS2_DIR : ATS_DIR) + "/profiles";
 
-	const storeDocsDir = await getStoredDocumentDir();
-	const docsDirSystem = await documentDir();
-	const docsDir = storeDocsDir || docsDirSystem;
+	const docsDir = await getDocsDir();
 
 	const dirProfiles = await getListDirProfiles(
 		(await join(docsDir, readDirProfiles)).toString()
@@ -132,7 +142,9 @@ export const readProfileNames = async (
 		if (saves === 0) continue;
 
 		const profileObject: ProfileWithoutSaves = {
+			id: dirProfiles[i].id,
 			name: dirProfiles[i].name,
+			game,
 			hex: dirProfiles[i].hex,
 			savesCount: saves,
 			avatar: profileImg,
@@ -258,10 +270,12 @@ export const setAllFuelTruck = async (dirSave: string): Promise<boolean> => {
 };
 
 export const setInfinitFuelTruck = async (
-	dirSave: string
+	dirSave: string,
+	fuelLevel: string
 ): Promise<boolean> => {
 	const rustParams = {
 		dirSave: dirSave + "/game.sii",
+		fuelLevel,
 	};
 
 	const invoceRes = (await invoke(
@@ -544,9 +558,7 @@ export const getSystemTheme = async (): Promise<themeTypes> => {
 export const getGameDeveloperStatus = async (
 	game: GamesNames
 ): Promise<responseGetDeveloperValues> => {
-	const storeDocsDir = await getStoredDocumentDir();
-	const docsDirSystem = await documentDir();
-	const docsDir = storeDocsDir || docsDirSystem;
+	const docsDir = await getDocsDir();
 
 	const rustParams = {
 		dirDocsGameFolder: (
@@ -566,9 +578,7 @@ export const setGameDeveloperStatus = async (
 	statusDeveloper: boolean,
 	game: GamesNames
 ): Promise<boolean> => {
-	const storeDocsDir = await getStoredDocumentDir();
-	const docsDirSystem = await documentDir();
-	const docsDir = storeDocsDir || docsDirSystem;
+	const docsDir = await getDocsDir();
 
 	const rustParams = {
 		dirDocsGameFolder: (
@@ -589,9 +599,7 @@ export const setConvoySize = async (
 	convoyStatus: boolean,
 	game: GamesNames
 ): Promise<boolean> => {
-	const storeDocsDir = await getStoredDocumentDir();
-	const docsDirSystem = await documentDir();
-	const docsDir = storeDocsDir || docsDirSystem;
+	const docsDir = await getDocsDir();
 
 	const rustParams = {
 		dirDocsGameFolder: (
@@ -664,6 +672,129 @@ export const setRemoveTruckBadge = async (
 
 	const invoceRes = (await invoke(
 		"set_remove_truck_badge",
+		rustParams
+	)) as responseRustTypes;
+
+	return invoceRes.res;
+};
+
+export const setTruckKm = async (
+	dirSave: string,
+	km: string
+): Promise<boolean> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+		km,
+	};
+
+	const invoceRes = (await invoke(
+		"set_truck_km",
+		rustParams
+	)) as responseRustTypes;
+
+	return invoceRes.res;
+};
+
+export const getSaveGameTrucks = async (
+	dirSave: string
+): Promise<ResponseSaveGameTrucks> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+	};
+
+	const invoceRes = (await invoke(
+		"get_save_list_trucks",
+		rustParams
+	)) as ResponseSaveGameTrucks;
+
+	return invoceRes;
+};
+
+export const getSaveGameTrailers = async (
+	dirSave: string
+): Promise<ResponseSaveGameTrailers> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+	};
+
+	const invoceRes = (await invoke(
+		"get_save_list_trailers",
+		rustParams
+	)) as ResponseSaveGameTrailers;
+
+	return invoceRes;
+};
+
+export const setPlayerTruck = async (
+	dirSave: string,
+	currentTruckId: string,
+	replaceTruckId: string
+): Promise<boolean> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+		currentTruckId,
+		replaceTruckId,
+	};
+
+	const invoceRes = (await invoke(
+		"set_player_truck",
+		rustParams
+	)) as responseRustTypes;
+
+	return invoceRes.res;
+};
+
+export const setPlayerTrailer = async (
+	dirSave: string,
+	currentTrailerId: string | null,
+	replaceTrailerId: string
+): Promise<boolean> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+		currentTrailerId,
+		replaceTrailerId,
+	};
+
+	const invoceRes = (await invoke(
+		"set_player_trailer",
+		rustParams
+	)) as responseRustTypes;
+
+	return invoceRes.res;
+};
+
+export const getSavePlayerCamera = async (
+	dirCam: string
+): Promise<ResponseSaveCameraPositions | null> => {
+	const rustParams = {
+		dirCam: dirCam + "/cams.txt",
+	};
+
+	const invoceRes = (await invoke(
+		"get_save_player_camera",
+		rustParams
+	)) as ResponseSaveCameraPositions;
+
+	if (invoceRes.res) {
+		return invoceRes;
+	}
+
+	return null;
+};
+
+export const setPlayerPosition = async (
+	dirSave: string,
+	location: string,
+	rotation: string
+): Promise<boolean> => {
+	const rustParams = {
+		dirSave: dirSave + "/game.sii",
+		location,
+		rotation,
+	};
+
+	const invoceRes = (await invoke(
+		"set_player_position",
 		rustParams
 	)) as responseRustTypes;
 
@@ -804,4 +935,74 @@ export const getStoredOpasityStatus = async (): Promise<boolean> => {
 
 	if (typeof status === "boolean") return status;
 	return true;
+};
+
+// os locale value
+
+/**
+ * ## Compliance with BCP-47 is strictly required
+ * @param lang Language string `language`-`region`
+ * @returns The exact language or the closest available language
+ */
+export const mostSimilarLang = (lang: string | null): Langs => {
+	if (!lang) return "en-US";
+
+	switch (lang) {
+		case "en-US":
+		case "en-CL":
+		case "zh-Hans":
+		case "fr-FR":
+			return lang as Langs;
+	}
+
+	const splitLang = lang.split("-");
+	switch (splitLang[0]) {
+		case "en":
+			return "en-US";
+		case "es":
+			return "es-CL";
+		case "zh":
+			return "zh-Hans";
+		case "fr":
+			return "fr-FR";
+		default:
+			return "en-US";
+	}
+};
+
+export const storeOsLocale = async (lang: Langs) => {
+	const STORE = new LazyStore(STORE_FILE);
+	await STORE.set("lang", lang);
+	await STORE.save();
+};
+
+export const getStoredOsLocale = async (): Promise<Langs | null> => {
+	const STORE = new LazyStore(STORE_FILE);
+	const lang = await STORE.get("lang");
+
+	if (!lang) return null;
+
+	if (typeof lang === "string") {
+		return mostSimilarLang(lang);
+	}
+
+	return null;
+};
+
+export const getCurrentLocale = async (): Promise<Langs> => {
+	const locale_store = await getStoredOsLocale();
+
+	if (!locale_store) {
+		const lang_locale = await locale();
+
+		if (lang_locale) {
+			const lang_similar = mostSimilarLang(lang_locale);
+			await storeOsLocale(lang_similar);
+			return lang_similar;
+		}
+
+		return "en-US";
+	}
+
+	return locale_store;
 };

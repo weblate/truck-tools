@@ -1,28 +1,35 @@
-import { useState, useContext, useEffect } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
-import { ProfileContex } from "@/hooks/useProfileContex";
+import { useState, useContext } from "react";
+
+// UI
+import { useDisclosure } from "@heroui/use-disclosure";
+import { Button } from "@heroui/button";
+import { Image } from "@heroui/image";
+import { Select, SelectItem } from "@heroui/select";
+import { Divider } from "@heroui/divider";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	useDisclosure,
-	Image,
-} from "@nextui-org/react";
+} from "@heroui/modal";
+import AlertSave from "@/components/AlertSave";
+import Warning from "@/components/Warning";
+
+// Hooks
+import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Utils
 import {
 	setTruckTransmission,
 	get_brand_models_ets2,
 	get_brand_models_ats,
 	setRemoveTruckBadge,
 } from "@/utils/fileEdit";
-import AlertSave from "@/components/AlertSave";
-import Warning from "@/components/Warning";
 import { BRANDS_ETS2, BRANDS_ATS } from "@/utils/Brands";
 
-// icons
+// Icons
 import {
 	IconPencil,
 	IconManualGearbox,
@@ -31,7 +38,7 @@ import {
 	IconBadgeOff,
 } from "@tabler/icons-react";
 
-// types
+// Types
 import { TransmissionType } from "@/types/SaveGameTypes";
 import { BrandModelTypes, BrandType } from "@/types/ConstTypes";
 
@@ -49,6 +56,9 @@ interface TruckTransmissionState {
 
 const SetTruckTransmission = () => {
 	const { selectedSave, game } = useContext(ProfileContex);
+	const { translations } = useContext(LocaleContext);
+	const { change_truck_transmission } = translations.menu_options.trucks;
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -173,17 +183,24 @@ const SetTruckTransmission = () => {
 			: true
 		: false;
 
-	useEffect(() => {
-		if (!isOpen) {
-			setTransmissionState({
-				selectedBrand: undefined,
-				selectedModel: undefined,
-				selectedTransmission: undefined,
-				transmissions: undefined,
-			});
-			setCompleted({ error: false, completed: false });
-		}
-	}, [isOpen]);
+	const resetState = () => {
+		setTransmissionState({
+			selectedBrand: undefined,
+			selectedModel: undefined,
+			selectedTransmission: undefined,
+			transmissions: undefined,
+		});
+		setCompleted({ error: false, completed: false });
+	};
+
+	const handleClose = () => {
+		resetState();
+	};
+
+	const openModalChange = (open: boolean) => {
+		onOpenChange();
+		if (!open) handleClose();
+	};
 
 	return (
 		<>
@@ -194,27 +211,24 @@ const SetTruckTransmission = () => {
 				color="primary"
 				variant="shadow"
 			>
-				Open
+				{change_truck_transmission.modal.btn_open}
 			</Button>
 			<Modal
 				hideCloseButton
 				size="md"
 				backdrop="blur"
 				isOpen={isOpen}
-				onOpenChange={onOpenChange}
+				onOpenChange={openModalChange}
 			>
 				<ModalContent>
 					{(onClose) => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">
-								Change truck transmission
+								{change_truck_transmission.modal.title}
 							</ModalHeader>
 							<Divider />
 							<ModalBody className="py-1">
-								<p>
-									Change the transmission of your truck to the one of your
-									choice
-								</p>
+								<p>{change_truck_transmission.modal.description}</p>
 								<Select
 									items={game === "ets2" ? BRANDS_ETS2 : BRANDS_ATS}
 									selectedKeys={
@@ -223,8 +237,10 @@ const SetTruckTransmission = () => {
 											: []
 									}
 									onChange={(e) => onClickBrand(e.target.value)}
-									label="Brands"
-									placeholder="Select truck brand"
+									label={change_truck_transmission.modal.input_brands.label}
+									placeholder={
+										change_truck_transmission.modal.input_brands.placeholder
+									}
 									labelPlacement="inside"
 									variant="bordered"
 									startContent={
@@ -273,8 +289,10 @@ const SetTruckTransmission = () => {
 											transmissionState.selectedBrand!.key
 										)
 									}
-									label="Models"
-									placeholder="Select truck model"
+									label={change_truck_transmission.modal.input_models.label}
+									placeholder={
+										change_truck_transmission.modal.input_models.placeholder
+									}
 									labelPlacement="inside"
 									variant="bordered"
 									startContent={<IconLayersSubtract stroke={2} />}
@@ -303,8 +321,13 @@ const SetTruckTransmission = () => {
 											: []
 									}
 									onChange={(e) => onClickTransmission(e.target.value)}
-									label="Transmissions"
-									placeholder="Select truck transmission"
+									label={
+										change_truck_transmission.modal.input_transmissions.label
+									}
+									placeholder={
+										change_truck_transmission.modal.input_transmissions
+											.placeholder
+									}
 									labelPlacement="inside"
 									variant="bordered"
 									startContent={<IconManualGearbox stroke={2} />}
@@ -339,8 +362,8 @@ const SetTruckTransmission = () => {
 								<AlertSave
 									message={
 										completed.error
-											? "An error occurred in the process"
-											: "Saved successfully"
+											? translations.components.alert_on_save_default.error
+											: translations.components.alert_on_save_default.succes
 									}
 									error={completed.error}
 									show={completed.completed}
@@ -351,18 +374,23 @@ const SetTruckTransmission = () => {
 								<Warning
 									text={
 										<div className="flex flex-col gap-2">
-											<b>Remember</b>
-											<p>
-												If you see any <b>logo floating or badly positioned</b>{" "}
-												on the truck you can remove it with the button below.
-											</p>
+											<b>
+												{change_truck_transmission.modal.warning_message.title}
+											</b>
+											<p
+												dangerouslySetInnerHTML={{
+													__html:
+														change_truck_transmission.modal.warning_message
+															.message,
+												}}
+											/>
 										</div>
 									}
 								/>
 							</ModalBody>
 							<ModalFooter>
 								<Button color="danger" variant="light" onPress={onClose}>
-									Close
+									{change_truck_transmission.modal.btn_close}
 								</Button>
 								<Button
 									endContent={<IconBadgeOff />}
@@ -371,7 +399,7 @@ const SetTruckTransmission = () => {
 									variant="bordered"
 									onPress={onClickRemoveBadge}
 								>
-									Remove badge
+									{change_truck_transmission.modal.btn_remove_badge}
 								</Button>
 								<Button
 									endContent={<IconReplace />}
@@ -379,7 +407,7 @@ const SetTruckTransmission = () => {
 									color="success"
 									onPress={onClickApply}
 								>
-									Change
+									{change_truck_transmission.modal.btn_apply}
 								</Button>
 							</ModalFooter>
 						</>

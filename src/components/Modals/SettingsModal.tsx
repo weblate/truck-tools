@@ -1,21 +1,29 @@
 import { FC, useState, useContext, useEffect } from "react";
+
+// Tauri
+import { open as openLink } from "@tauri-apps/plugin-shell";
 import { open, OpenDialogOptions } from "@tauri-apps/plugin-dialog";
 import { documentDir } from "@tauri-apps/api/path";
+import { locale } from "@tauri-apps/plugin-os";
+
+// UI
+import { Input } from "@heroui/input";
+import { Switch } from "@heroui/switch";
+import { Select, SelectItem } from "@heroui/select";
+import { Divider } from "@heroui/divider";
+import { Button } from "@heroui/button";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	Select,
-	SelectItem,
-	Switch,
-	Input,
-} from "@nextui-org/react";
+} from "@heroui/modal";
+
+// Hooks
 import { DarkModeContex } from "@/hooks/useDarkModeContex";
 import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
 import {
 	getStoredDocumentDir,
 	storeDocumentDir,
@@ -24,16 +32,19 @@ import {
 	setConvoySize,
 	getStoredOpasityStatus,
 	storeOpasityStatus,
+	mostSimilarLang,
 } from "@/utils/fileEdit";
 
-// types
+// Types
+import { Langs } from "@/types/TranslationsTypes";
 import { themeTypesSystem } from "@/types/fileEditTypes";
 
-// icons
+// Icons
 import {
 	IconFolderSearch,
 	IconFolderPlus,
 	IconRefresh,
+	IconEdit,
 } from "@tabler/icons-react";
 
 interface SettingsModalProps {
@@ -42,7 +53,6 @@ interface SettingsModalProps {
 }
 
 interface OptionsStateTypes {
-	language: string;
 	enableConsole: boolean;
 	enable128Convoy: boolean;
 	opasityProfile: boolean;
@@ -53,9 +63,10 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 	const { userTheme, setUserTheme, setOpasityStatus } =
 		useContext(DarkModeContex);
 	const { reloadProfiles, game } = useContext(ProfileContex);
+	const { translations, lang, changeLang } = useContext(LocaleContext);
+	const { settings } = translations.menu_options;
 
 	const [optionsState, setOptionsState] = useState<OptionsStateTypes>({
-		language: "english",
 		enableConsole: false,
 		enable128Convoy: false,
 		opasityProfile: false,
@@ -100,7 +111,7 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 
 	const openSelectDir = async () => {
 		const options: OpenDialogOptions = {
-			title: "Select the folder where your progre is stored",
+			title: settings.document_dialog_title,
 			directory: true,
 			multiple: false,
 			defaultPath: await documentDir(),
@@ -115,7 +126,6 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 
 			setOptionsState((prev) => ({
 				...prev,
-				language: "english",
 				enableConsole: false,
 				enable128Convoy: false,
 				documentDir: res as string,
@@ -126,6 +136,8 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 
 	const resetConfigs = async () => {
 		const dirSetDefault = await documentDir();
+		const sys_lang = await locale();
+		const lang_res = mostSimilarLang(sys_lang);
 
 		onClickTheme("system");
 		await storeDocumentDir(dirSetDefault);
@@ -137,16 +149,15 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 		setOpasityStatus(true);
 
 		setOptionsState({
-			language: "english",
 			enableConsole: false,
 			enable128Convoy: false,
 			opasityProfile: true,
 			documentDir: dirSetDefault,
 		});
+		changeLang(lang_res);
 	};
 
 	useEffect(() => {
-		// cambiar el target dinamicamente segun el tipo de juego (actualmente solo con ETS2)
 		const getOptions = async () => {
 			const getDocumentDirStore = await getStoredDocumentDir();
 			const getGameDeveloperStatusStore = await getGameDeveloperStatus(game);
@@ -159,7 +170,6 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 			}
 
 			setOptionsState({
-				language: "english",
 				enableConsole:
 					getGameDeveloperStatusStore.console &&
 					getGameDeveloperStatusStore.developer,
@@ -184,7 +194,9 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 			<ModalContent>
 				{() => (
 					<>
-						<ModalHeader className="flex flex-col gap-1">Settings</ModalHeader>
+						<ModalHeader className="flex flex-col gap-1">
+							{settings.title}
+						</ModalHeader>
 						<Divider />
 						<ModalBody className="flex pb-1">
 							<div className="flex justify-center gap-1">
@@ -193,32 +205,66 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 									onChange={(e) =>
 										onClickTheme(e.target.value as "system" | "light" | "dark")
 									}
-									label="Change theme"
+									label={settings.input_change_theme.label}
+									placeholder={settings.input_change_theme.placeholder}
 									variant="bordered"
-									placeholder="Select a theme"
 								>
-									<SelectItem key="system">System</SelectItem>
-									<SelectItem key="dark">Dark</SelectItem>
-									<SelectItem key="light">Light</SelectItem>
+									<SelectItem key="system">
+										{settings.input_change_theme.options.system}
+									</SelectItem>
+									<SelectItem key="dark">
+										{settings.input_change_theme.options.dark}
+									</SelectItem>
+									<SelectItem key="light">
+										{settings.input_change_theme.options.light}
+									</SelectItem>
 								</Select>
 							</div>
-							<div className="flex justify-center gap-1">
+							<div className="flex items-center justify-center gap-2">
 								<Select
-									label="Change language"
+									label={settings.input_change_language.label}
+									placeholder={settings.input_change_language.placeholder}
 									variant="bordered"
-									selectedKeys={[optionsState.language]}
-									placeholder="Select a language"
-									isDisabled
+									selectedKeys={[lang]}
+									onChange={(e) => {
+										if (!e.target.value) return;
+										changeLang(e.target.value as Langs);
+									}}
 								>
-									<SelectItem key="english">English</SelectItem>
+									<SelectItem key="en-US">English</SelectItem>
+									<SelectItem key="zh-Hans">简体中文</SelectItem>
+									<SelectItem key="zh-Hant">繁體中文</SelectItem>
+									<SelectItem key="fr-FR">Français</SelectItem>
+									<SelectItem key="vi-VN">Tiếng Việt</SelectItem>
+									<SelectItem key="pt-BR">Português</SelectItem>
+									<SelectItem key="es-CL">Español</SelectItem>
+									<SelectItem key="ko-KR">한국어</SelectItem>
+									<SelectItem key="uk-UA">Українська</SelectItem>
+									<SelectItem key="de-DE">Deutsch</SelectItem>
+									<SelectItem key="pl-PL">polski</SelectItem>
+									<SelectItem key="ru-RU">Русский</SelectItem>
+									<SelectItem key="ro-RO">Română</SelectItem>
+									<SelectItem key="tr-TR">Türkçe</SelectItem>
+									<SelectItem key="jp-JP">日本語</SelectItem>
 								</Select>
+								<Button
+									color="primary"
+									isIconOnly
+									onPress={() =>
+										openLink(
+											"https://github.com/CoffeSiberian/truck-tools/blob/main/src/translations/README.md"
+										)
+									}
+								>
+									<IconEdit />
+								</Button>
 							</div>
 							<div className="flex">
 								<Switch
 									onValueChange={(e) => onClickDeveloperStatus(e)}
 									isSelected={optionsState.enableConsole}
 								>
-									Enable console and developer mode
+									{settings.input_enable_console}
 								</Switch>
 							</div>
 							<div className="flex">
@@ -226,7 +272,7 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 									onValueChange={(e) => onClickConvoySize(e)}
 									isSelected={optionsState.enable128Convoy}
 								>
-									Enable 128 convoy mode slots
+									{settings.input_enable_128_slots}
 								</Switch>
 							</div>
 							<div className="flex">
@@ -234,7 +280,7 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 									onValueChange={(e) => onClickOpacityStatus(e)}
 									isSelected={optionsState.opasityProfile}
 								>
-									Opacity on select profile
+									{settings.input_opacity_profile}
 								</Switch>
 							</div>
 							<div className="flex">
@@ -253,8 +299,8 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 										</div>
 									}
 									size="sm"
-									label="Document folder"
-									placeholder="Enter the document folder"
+									label={settings.input_document_folder.label}
+									placeholder={settings.input_document_folder.placeholder}
 									variant="bordered"
 								/>
 							</div>
@@ -267,7 +313,7 @@ const SettingsModal: FC<SettingsModalProps> = ({ isOpen, onOpenChange }) => {
 								size="sm"
 								variant="bordered"
 							>
-								Reset Settings
+								{settings.btn_reset}
 							</Button>
 						</ModalFooter>
 					</>

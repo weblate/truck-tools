@@ -1,10 +1,17 @@
 import { useContext } from "react";
-import { DarkModeContex } from "@/hooks/useDarkModeContex";
-import { Button } from "@nextui-org/react";
+
+// Tauri
 import { open } from "@tauri-apps/plugin-shell";
+
+// UI
+import { Button } from "@heroui/button";
 import classNames from "classnames";
 
-// icons
+// Hooks
+import { DarkModeContex } from "@/hooks/useDarkModeContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Icons
 import {
 	IconAlertTriangle,
 	IconHelp,
@@ -13,30 +20,34 @@ import {
 
 const ProfileError = () => {
 	const { darkMode } = useContext(DarkModeContex);
+	const { translations } = useContext(LocaleContext);
+	const { profile_error } = translations.components;
 
 	return (
 		<div
 			className={classNames(
-				"fixed bottom-[105px] max-w-3xl rounded-3xl shadow-lg",
+				"fixed bottom-26.25 max-w-3xl rounded-3xl shadow-lg",
 				darkMode ? "bg-[#c81260]" : "bg-[#f51260]"
 			)}
 		>
 			<div className="flex flex-row items-center p-4">
 				<div className="mr-2 flex items-center">
 					<IconAlertTriangle
-						className="mr-3 h-8 w-8 flex-shrink-0 text-white"
+						className="mr-3 h-8 w-8 shrink-0 text-white"
 						size={32}
 						stroke={2}
 					/>
-					<h2 className="text-balance text-lg font-semibold tracking-wide text-white">
-						Profiles not found
+					<h2 className="text-lg font-semibold tracking-wide text-balance text-white">
+						{profile_error.title}
 					</h2>
 				</div>
 				<div className="flex flex-col items-center gap-1">
-					<p className="text-red-100">
-						Remember to <b> disable Steam Cloud</b> from your profile or verify
-						the location of your "Documents" folder
-					</p>
+					<p
+						className="text-red-100"
+						dangerouslySetInnerHTML={{
+							__html: profile_error.description,
+						}}
+					/>
 					<div className="flex gap-5">
 						<Button
 							onPress={() => open("https://imgur.com/lVbgbgH")}
@@ -44,7 +55,7 @@ const ProfileError = () => {
 							color="success"
 							endContent={<IconHelp />}
 						>
-							<b>How to disable Steam Cloud</b>
+							<b>{profile_error.btn_how_to_disable}</b>
 						</Button>
 						<Button
 							onPress={() => open("https://youtu.be/e2aYdREZX4M")}
@@ -52,7 +63,7 @@ const ProfileError = () => {
 							color="default"
 							endContent={<IconBrandYoutube />}
 						>
-							<b>Tutorial video</b>
+							<b>{profile_error.btn_how_to}</b>
 						</Button>
 					</div>
 				</div>

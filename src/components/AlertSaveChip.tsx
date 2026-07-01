@@ -1,5 +1,7 @@
 import { FC } from "react";
-import { Chip } from "@nextui-org/react";
+
+// UI
+import { Chip } from "@heroui/chip";
 
 // icons
 import { IconDeviceFloppy, IconAlertTriangle } from "@tabler/icons-react";

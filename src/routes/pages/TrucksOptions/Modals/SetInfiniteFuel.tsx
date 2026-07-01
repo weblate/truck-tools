@@ -1,20 +1,28 @@
 import { useState, useContext } from "react";
-import { ProfileContex } from "@/hooks/useProfileContex";
+
+// UI
+import { useDisclosure } from "@heroui/use-disclosure";
+import { Button } from "@heroui/button";
+import { Slider } from "@heroui/slider";
+import { Divider } from "@heroui/divider";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	useDisclosure,
-} from "@nextui-org/react";
-import { setInfinitFuelTruck, setFuelTruck } from "@/utils/fileEdit";
+} from "@heroui/modal";
 import AlertSave from "@/components/AlertSave";
 import Warning from "@/components/Warning";
 
-// icons
+// Hooks
+import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Utils
+import { setInfinitFuelTruck, setFuelTruck } from "@/utils/fileEdit";
+
+// Icons
 import { IconPencil, IconGasStation, IconRestore } from "@tabler/icons-react";
 
 interface completedProps {
@@ -24,7 +32,12 @@ interface completedProps {
 
 const SetInfiniteFuel = () => {
 	const { selectedSave } = useContext(ProfileContex);
+	const { translations } = useContext(LocaleContext);
+	const { trucks } = translations.menu_options;
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+	const [fuelLevel, setFuelLevel] = useState<number>(1);
 	const [isLoadingRefuel, setIsLoadingRefuel] = useState<boolean>(false);
 	const [isLoadingRestore, setIsLoadingRestore] = useState<boolean>(false);
 	const [completed, setCompleted] = useState<completedProps>({
@@ -39,7 +52,10 @@ const SetInfiniteFuel = () => {
 
 		if (selectedSave) {
 			setIsLoadingRefuel(true);
-			const res = await setInfinitFuelTruck(selectedSave.dir);
+			const res = await setInfinitFuelTruck(
+				selectedSave.dir,
+				fuelLevel.toFixed(1)
+			);
 			setCompleted({
 				error: !res,
 				completed: true,
@@ -73,11 +89,11 @@ const SetInfiniteFuel = () => {
 				color="primary"
 				variant="shadow"
 			>
-				Open
+				{trucks.custom_fuel.modal.btn_open}
 			</Button>
 			<Modal
 				hideCloseButton
-				size="md"
+				size="lg"
 				backdrop="blur"
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
@@ -87,30 +103,41 @@ const SetInfiniteFuel = () => {
 					{(onClose) => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">
-								Infinite fuel on current truck
+								{trucks.custom_fuel.modal.title}
 							</ModalHeader>
 							<Divider />
 							<ModalBody className="py-1">
-								<p>
-									Exactly the fuel is not infinite but it is for approximately
-									5.000.000 KM (depending on the truck)
-								</p>
+								<p>{trucks.custom_fuel.modal.description}</p>
+								<Slider
+									size="lg"
+									color="success"
+									label={trucks.custom_fuel.modal.fuel_level}
+									minValue={0}
+									maxValue={10}
+									step={0.1}
+									value={fuelLevel}
+									onChange={(v) => setFuelLevel(Array.isArray(v) ? v[0] : v)}
+									getValue={(v) => Number(v).toFixed(1)}
+									className="max-w-md"
+								/>
 								<Warning
 									text={
 										<div className="flex flex-col gap-2">
-											<b>Remember</b>
-											<p>
-												<b>Disable “Realistic fuel consumption”</b> in your
-												“Gameplay” section for this function to take effect.
-											</p>
+											<b>{trucks.custom_fuel.modal.warning_message.title}</b>
+											<p
+												dangerouslySetInnerHTML={{
+													__html:
+														trucks.custom_fuel.modal.warning_message.message,
+												}}
+											/>
 										</div>
 									}
 								/>
 								<AlertSave
 									message={
 										completed.error
-											? "An error occurred in the process"
-											: "Saved successfully"
+											? translations.components.alert_on_save_default.error
+											: translations.components.alert_on_save_default.succes
 									}
 									error={completed.error}
 									show={completed.completed}
@@ -121,7 +148,7 @@ const SetInfiniteFuel = () => {
 							</ModalBody>
 							<ModalFooter>
 								<Button color="danger" variant="light" onPress={onClose}>
-									Close
+									{trucks.custom_fuel.modal.btn_close}
 								</Button>
 								<Button
 									endContent={<IconRestore />}
@@ -130,7 +157,7 @@ const SetInfiniteFuel = () => {
 									variant="flat"
 									onPress={onClickRestore}
 								>
-									Restore fuel
+									{trucks.custom_fuel.modal.btn_restore_fuel}
 								</Button>
 								<Button
 									endContent={<IconGasStation />}
@@ -138,7 +165,7 @@ const SetInfiniteFuel = () => {
 									color="success"
 									onPress={onClickApply}
 								>
-									Refuel
+									{trucks.custom_fuel.modal.btn_apply}
 								</Button>
 							</ModalFooter>
 						</>

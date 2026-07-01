@@ -30,12 +30,23 @@ To install you will need to run the downloaded file (**.msi**) where it is likel
 
 **Many thanks for your help ❤️**
 
-[![Contributors](https://contrib.rocks/image?repo=CoffeSiberian/truck-tools&max=500&columns=20)](https://github.com/CoffeSiberian/truck-tools/graphs/contributors)
+<a href="https://github.com/coffesiberian/truck-tools/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=coffesiberian/truck-tools" />
+</a>
+
+### Contribute Translations
+
+Would you like to see Truck Tools in your language? We are using [Weblate][weblate], an easy-to-use platform that allows anyone to translate this project through a convenient web interface.
+Create an account and start proposing text strings that could be added to the application in the future.
+
+Remember, contributing translations makes you a collaborator of the project!
 
 ### TO DO
 
 - [x] ATS compatibility
+- [x] Teleporting with a game save
 - [ ] Logo for the app (desktop icon and the main image of the app)
+- [ ] Implement [decrypt_truck][decrypt_truck] library as BETA
 
 #### Trailers
 
@@ -46,6 +57,7 @@ To install you will need to run the downloaded file (**.msi**) where it is likel
 - [x] Repair all trailers
 - [x] Create customized color license plate
 - [x] Save license plate data
+- [x] Changing the truck (no need to go to the garage)
 
 #### Trucks
 
@@ -57,9 +69,13 @@ To install you will need to run the downloaded file (**.msi**) where it is likel
 - [x] Create customized color license plate
 - [x] Save license plate data
 - [x] Set custom engines and transmission
+- [x] Modify kilometers traveled by the truck
+- [x] Changing the trailer (no need to go to the garage)
 
 #### Profiles
 
+- [ ] Display the current level of the profile
+- [ ] Assign profile levels instead of XP points to the profile
 - [x] Add infinite money
 - [x] Add level 100
 - [x] Unlock garages
@@ -69,30 +85,34 @@ To install you will need to run the downloaded file (**.msi**) where it is likel
 - [x] Profile backup
 - [x] Clone profile
 - [x] Clone config
+- [x] Clone config between games
 - [x] Rename profiles
 
 #### Settings
 
+- [ ] Possibility to activate and deactivate the BETA decryptor
+- [ ] Warning message when a user activates the BETA decryptor
 - [x] Documents Path
 - [x] Dark Mode config
-- [ ] Change language
+- [x] Change language
 - [x] Enable console and developer mode
 - [x] Change convoy mode slots to `128`
 
-❌ Change save format (unnecessary function)
+#### CORE
+
+- [ ] Share trailers and trucks with a link
+- [ ] User account
 
 #### Possible features
 
-- Share trailers and trucks with a link
-- Compatibility with DLC's when sharing trailers
-- User account
 - Create custom routes
 - Reset infractions
 - Mods management
-- Modify kilometers traveled by the truck
-- Changing the truck (no need to go to the garage)
 - Allow cities to be unlocked and grages to be purchased in a specific way and not in a general
 - Flexible editor for truck and trailer accessories
+- Unblock recruiting agencies
+- Discover all the map
+- Truck color management
 
 ### Related projects
 
@@ -108,3 +128,6 @@ https://github.com/TheLazyTomcat/SII_Decrypt
 #### FindTruckInfo
 
 Script to automate the search for engines and transmissions in the game https://github.com/CoffeSiberian/FindTruckInfo
+
+[weblate]: https://hosted.weblate.org/projects/truck-tools/truck-tools/
+[decrypt_truck]: https://crates.io/crates/decrypt_truck

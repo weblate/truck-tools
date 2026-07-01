@@ -1,5 +1,12 @@
 import { createContext, useState, useEffect, useCallback, useRef } from "react";
-import { readProfileNames, getListSaves } from "@/utils/fileEdit";
+import { join } from "@tauri-apps/api/path";
+import {
+	readProfileNames,
+	getListSaves,
+	getDocsDir,
+	ATS_DIR,
+	ETS2_DIR,
+} from "@/utils/fileEdit";
 
 // types
 import { ProviderProps } from "@/types/ReactTypes";
@@ -47,11 +54,19 @@ export const ProfileContexInfo = ({ children }: ProviderProps) => {
 		if (profilesNotFound) setProfilesNotFound(false);
 
 		setIsProfilesLoading(false);
+
+		const docsDir = await getDocsDir();
+		const dirDocsGame = await join(
+			docsDir,
+			profile.game === "ets2" ? ETS2_DIR : ATS_DIR
+		);
+
 		setProfile({
 			game: profile.game,
 			selectedProfile: undefined,
 			selectedSave: undefined,
 			listProfiles: prof,
+			dirDocsGame: dirDocsGame,
 		});
 	}, [profile, profilesNotFound]);
 
@@ -72,11 +87,19 @@ export const ProfileContexInfo = ({ children }: ProviderProps) => {
 		if (profilesNotFound) setProfilesNotFound(false);
 
 		setIsProfilesLoading(false);
+
+		const docsDir = await getDocsDir();
+		const dirDocsGame = await join(
+			docsDir,
+			game === "ets2" ? ETS2_DIR : ATS_DIR
+		);
+
 		setProfile({
 			game: game,
 			selectedProfile: undefined,
 			selectedSave: undefined,
 			listProfiles: prof,
+			dirDocsGame: dirDocsGame,
 		});
 	};
 
@@ -99,7 +122,9 @@ export const ProfileContexInfo = ({ children }: ProviderProps) => {
 		if (!saveList) return;
 
 		const profile_to_save = {
+			id: profile_info.id,
 			name: profile_info.name,
+			game: profile_info.game,
 			hex: profile_info.hex,
 			saves: saveList,
 			avatar: profile_info.avatar,
@@ -116,6 +141,7 @@ export const ProfileContexInfo = ({ children }: ProviderProps) => {
 	useEffect(() => {
 		if (!loaded.current) {
 			loaded.current = true;
+			// eslint-disable-next-line
 			loadDirectory();
 		}
 	}, [loadDirectory]);
@@ -124,6 +150,7 @@ export const ProfileContexInfo = ({ children }: ProviderProps) => {
 		<ProfileContex.Provider
 			value={{
 				selectedProfile: profile.selectedProfile,
+				dirDocsGame: profile.dirDocsGame,
 				selectedSave: profile.selectedSave,
 				listProfiles: profile.listProfiles,
 				isSavesLoading: isSavesLoading,

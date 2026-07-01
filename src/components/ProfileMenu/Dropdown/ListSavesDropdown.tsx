@@ -1,5 +1,12 @@
-import { FC } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
+import { FC, useContext } from "react";
+
+// UI
+import { Select, SelectItem } from "@heroui/select";
+
+// Hooks
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Types
 import { ProfileTypesContext } from "@/types/ContexTypes";
 
 const ListSavesDropdown: FC<ProfileTypesContext> = ({
@@ -8,6 +15,9 @@ const ListSavesDropdown: FC<ProfileTypesContext> = ({
 	isSavesLoading,
 	setSave,
 }) => {
+	const { translations } = useContext(LocaleContext);
+	const { player_profile } = translations.components;
+
 	const onClickSave = (saveHex: string) => {
 		selectedProfile?.saves.map((save) => {
 			if (save.id === saveHex) {
@@ -19,14 +29,16 @@ const ListSavesDropdown: FC<ProfileTypesContext> = ({
 	return (
 		<Select
 			isDisabled={selectedProfile && !isSavesLoading ? false : true}
-			errorMessage={selectedProfile ? undefined : "No profile selected"}
+			errorMessage={
+				selectedProfile ? undefined : player_profile.no_selected_profile
+			}
 			isLoading={isSavesLoading}
 			isInvalid={selectedProfile ? (selectedSave ? false : true) : false}
 			items={selectedProfile ? selectedProfile.saves : []}
 			selectedKeys={selectedSave ? [selectedSave.id] : []}
 			onChange={(e) => onClickSave(e.target.value)}
-			label="Saves"
-			placeholder="Select a save"
+			label={player_profile.input_select_save.label}
+			placeholder={player_profile.input_select_save.placeholder}
 			labelPlacement="inside"
 			variant="bordered"
 			size="md"

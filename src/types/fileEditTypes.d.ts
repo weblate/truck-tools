@@ -59,3 +59,30 @@ export interface IColorHsvToValidate {
 	readonly v: number;
 	readonly a: number;
 }
+
+export interface SaveTrucks {
+	brand_name: string;
+	truck_id: string;
+	truck_number: number;
+}
+
+export interface ResponseSaveGameTrucks extends responseRustTypes {
+	current_truck_id: string;
+	trucks: SaveTrucks[];
+}
+
+export interface SaveTrailers {
+	brand_name: string;
+	trailer_id: string;
+	trailer_number: number;
+}
+
+export interface ResponseSaveGameTrailers extends responseRustTypes {
+	current_trailer_id: string | null;
+	trailers: SaveTrailers[];
+}
+
+export interface ResponseSaveCameraPositions extends responseRustTypes {
+	location: string;
+	rotation: string;
+}

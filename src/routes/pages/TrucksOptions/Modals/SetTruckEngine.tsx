@@ -1,27 +1,34 @@
-import { useState, useContext, useEffect } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
-import { ProfileContex } from "@/hooks/useProfileContex";
+import { useState, useContext } from "react";
+
+// UI
+import { useDisclosure } from "@heroui/use-disclosure";
+import { Button } from "@heroui/button";
+import { Image } from "@heroui/image";
+import { Select, SelectItem } from "@heroui/select";
+import { Divider } from "@heroui/divider";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	useDisclosure,
-	Image,
-} from "@nextui-org/react";
+} from "@heroui/modal";
+import AlertSave from "@/components/AlertSave";
+import Warning from "@/components/Warning";
+
+// Hooks
+import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Utils
 import {
 	setTruckEngine,
 	get_brand_models_ets2,
 	get_brand_models_ats,
 	setRemoveTruckBadge,
 } from "@/utils/fileEdit";
-import AlertSave from "@/components/AlertSave";
-import Warning from "@/components/Warning";
 
-// icons
+// Icons
 import {
 	IconPencil,
 	IconEngine,
@@ -30,7 +37,7 @@ import {
 	IconBadgeOff,
 } from "@tabler/icons-react";
 
-// types
+// Types
 import { EngineType } from "@/types/SaveGameTypes";
 import { BrandModelTypes, BrandType } from "@/types/ConstTypes";
 import { BRANDS_ETS2, BRANDS_ATS } from "@/utils/Brands";
@@ -49,6 +56,9 @@ interface TruckEngineState {
 
 const SetTruckEngine = () => {
 	const { selectedSave, game } = useContext(ProfileContex);
+	const { translations } = useContext(LocaleContext);
+	const { change_truck_engine } = translations.menu_options.trucks;
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -171,17 +181,24 @@ const SetTruckEngine = () => {
 			: true
 		: false;
 
-	useEffect(() => {
-		if (!isOpen) {
-			setStateEngine({
-				selectedBrand: undefined,
-				selectedModel: undefined,
-				selectedEngine: undefined,
-				engines: undefined,
-			});
-			setCompleted({ error: false, completed: false });
-		}
-	}, [isOpen]);
+	const resetState = () => {
+		setStateEngine({
+			selectedBrand: undefined,
+			selectedModel: undefined,
+			selectedEngine: undefined,
+			engines: undefined,
+		});
+		setCompleted({ error: false, completed: false });
+	};
+
+	const handleClose = () => {
+		resetState();
+	};
+
+	const openModalChange = (open: boolean) => {
+		onOpenChange();
+		if (!open) handleClose();
+	};
 
 	return (
 		<>
@@ -192,24 +209,24 @@ const SetTruckEngine = () => {
 				color="primary"
 				variant="shadow"
 			>
-				Open
+				{change_truck_engine.modal.btn_open}
 			</Button>
 			<Modal
 				hideCloseButton
 				size="md"
 				backdrop="blur"
 				isOpen={isOpen}
-				onOpenChange={onOpenChange}
+				onOpenChange={openModalChange}
 			>
 				<ModalContent>
 					{(onClose) => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">
-								Change truck engine
+								{change_truck_engine.modal.title}
 							</ModalHeader>
 							<Divider />
 							<ModalBody className="py-1">
-								<p>Change the engine of your truck to the one of your choice</p>
+								<p>{change_truck_engine.modal.description}</p>
 								<Select
 									items={game === "ets2" ? BRANDS_ETS2 : BRANDS_ATS}
 									selectedKeys={
@@ -218,8 +235,10 @@ const SetTruckEngine = () => {
 											: []
 									}
 									onChange={(e) => onClickBrand(e.target.value)}
-									label="Brands"
-									placeholder="Select truck brand"
+									label={change_truck_engine.modal.input_brands.label}
+									placeholder={
+										change_truck_engine.modal.input_brands.placeholder
+									}
 									labelPlacement="inside"
 									variant="bordered"
 									startContent={
@@ -268,8 +287,10 @@ const SetTruckEngine = () => {
 											stateEngine.selectedBrand!.key
 										)
 									}
-									label="Models"
-									placeholder="Select truck model"
+									label={change_truck_engine.modal.input_models.label}
+									placeholder={
+										change_truck_engine.modal.input_models.placeholder
+									}
 									labelPlacement="inside"
 									variant="bordered"
 									startContent={<IconLayersSubtract stroke={2} />}
@@ -294,8 +315,10 @@ const SetTruckEngine = () => {
 											: []
 									}
 									onChange={(e) => onClickEngine(e.target.value)}
-									label="Engines"
-									placeholder="Select truck engine"
+									label={change_truck_engine.modal.input_engines.label}
+									placeholder={
+										change_truck_engine.modal.input_engines.placeholder
+									}
 									labelPlacement="inside"
 									variant="bordered"
 									startContent={<IconEngine stroke={2} />}
@@ -321,8 +344,8 @@ const SetTruckEngine = () => {
 								<AlertSave
 									message={
 										completed.error
-											? "An error occurred in the process"
-											: "Saved successfully"
+											? translations.components.alert_on_save_default.error
+											: translations.components.alert_on_save_default.succes
 									}
 									error={completed.error}
 									show={completed.completed}
@@ -333,18 +356,20 @@ const SetTruckEngine = () => {
 								<Warning
 									text={
 										<div className="flex flex-col gap-2">
-											<b>Remember</b>
-											<p>
-												If you see any <b>logo floating or badly positioned</b>{" "}
-												on the truck you can remove it with the button below.
-											</p>
+											<b>{change_truck_engine.modal.warning_message.title}</b>
+											<p
+												dangerouslySetInnerHTML={{
+													__html:
+														change_truck_engine.modal.warning_message.message,
+												}}
+											/>
 										</div>
 									}
 								/>
 							</ModalBody>
 							<ModalFooter>
 								<Button color="danger" variant="light" onPress={onClose}>
-									Close
+									{change_truck_engine.modal.btn_close}
 								</Button>
 								<Button
 									endContent={<IconBadgeOff />}
@@ -353,7 +378,7 @@ const SetTruckEngine = () => {
 									variant="bordered"
 									onPress={onClickRemoveBadge}
 								>
-									Remove badge
+									{change_truck_engine.modal.btn_remove_badge}
 								</Button>
 								<Button
 									endContent={<IconReplace />}
@@ -361,7 +386,7 @@ const SetTruckEngine = () => {
 									color="success"
 									onPress={onClickApply}
 								>
-									Change
+									{change_truck_engine.modal.btn_apply}
 								</Button>
 							</ModalFooter>
 						</>

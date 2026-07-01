@@ -1,24 +1,31 @@
 import { useState, useContext } from "react";
-import { ProfileContex } from "@/hooks/useProfileContex";
+
+// UI
+import { RadioGroup } from "@heroui/radio";
+import { useDisclosure } from "@heroui/use-disclosure";
+import { Button } from "@heroui/button";
+import { Divider } from "@heroui/divider";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	useDisclosure,
-	RadioGroup,
-} from "@nextui-org/react";
+} from "@heroui/modal";
 import CustomRadio from "@/components/CustomRadio";
-import { setProfileGarageStatus } from "@/utils/fileEdit";
 import AlertSave from "@/components/AlertSave";
 
-// icons
+// Hooks
+import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Utils
+import { setProfileGarageStatus } from "@/utils/fileEdit";
+
+// Icons
 import { IconPencil, IconDeviceFloppy } from "@tabler/icons-react";
 
-// images
+// Images
 // ets2
 import smallGarage from "@/static/img/ets2/garages/small.webp";
 import mediumGarage from "@/static/img/ets2/garages/medium.webp";
@@ -36,6 +43,9 @@ interface completedProps {
 
 const SetGarageStatus = () => {
 	const { selectedSave, game } = useContext(ProfileContex);
+	const { translations } = useContext(LocaleContext);
+	const { garage_status } = translations.menu_options.profile;
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const [GarageStatus, setGarageStatus] = useState<string>("3");
@@ -72,7 +82,7 @@ const SetGarageStatus = () => {
 				color="primary"
 				variant="shadow"
 			>
-				Open
+				{garage_status.modal.btn_open}
 			</Button>
 			<Modal
 				hideCloseButton
@@ -86,50 +96,59 @@ const SetGarageStatus = () => {
 					{(onClose) => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">
-								Set Garage Status
+								{garage_status.modal.title}
 							</ModalHeader>
 							<Divider />
 							<ModalBody className="py-1">
-								<p>
-									Select the status of the garage you want to apply to your
-									profile
-								</p>
+								<p>{garage_status.modal.description}</p>
 								<RadioGroup
 									className="items-center"
 									value={GarageStatus}
 									onValueChange={(value) => setGarageStatus(value)}
 									orientation="horizontal"
-									label="Garage status"
+									label={garage_status.modal.input_garage_status.label}
 								>
 									<CustomRadio
 										selectedGarage={GarageStatus}
-										text="Sell Garage"
+										text={
+											garage_status.modal.input_garage_status.options
+												.sell_garage
+										}
 										value="1"
 									/>
 									<CustomRadio
 										selectedGarage={GarageStatus}
 										image={game === "ets2" ? smallGarage : smallGarage_ats}
-										text="Small Garage"
+										text={
+											garage_status.modal.input_garage_status.options
+												.small_garage
+										}
 										value="6"
 									/>
 									<CustomRadio
 										selectedGarage={GarageStatus}
 										image={game === "ets2" ? mediumGarage : mediumGarage_ats}
-										text="Medium Garage"
+										text={
+											garage_status.modal.input_garage_status.options
+												.medium_garage
+										}
 										value="2"
 									/>
 									<CustomRadio
 										selectedGarage={GarageStatus}
 										image={game === "ets2" ? largeGarage : largeGarage_ats}
-										text="Large Garage"
+										text={
+											garage_status.modal.input_garage_status.options
+												.large_garage
+										}
 										value="3"
 									/>
 								</RadioGroup>
 								<AlertSave
 									message={
 										completed.error
-											? "An error occurred in the process"
-											: "Saved successfully"
+											? translations.components.alert_on_save_default.error
+											: translations.components.alert_on_save_default.succes
 									}
 									error={completed.error}
 									show={completed.completed}
@@ -140,7 +159,7 @@ const SetGarageStatus = () => {
 							</ModalBody>
 							<ModalFooter>
 								<Button color="danger" variant="light" onPress={onClose}>
-									Close
+									{garage_status.modal.btn_close}
 								</Button>
 								<Button
 									endContent={<IconDeviceFloppy />}
@@ -148,7 +167,7 @@ const SetGarageStatus = () => {
 									color="success"
 									onPress={onClickApply}
 								>
-									Apply
+									{garage_status.modal.btn_apply}
 								</Button>
 							</ModalFooter>
 						</>

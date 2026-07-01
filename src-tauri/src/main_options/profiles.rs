@@ -1,3 +1,5 @@
+use crate::main_options::trucks::get_truck_id;
+use crate::main_options::vehicles_player::get_player_vehicles_data_have_same_vehicle_id;
 use crate::structs::experience_skills::ExperienceSkills;
 use crate::structs::vec_items_find::VecItemsFind;
 use crate::structs::vec_items_replace::{VecGaragesReplace, VecItemsReplace};
@@ -639,4 +641,58 @@ pub async fn copy_profile_configs(dir_profile: &Path, dest_dir_profile: &Path) -
     }
 
     return true;
+}
+
+pub fn set_player_map_position(
+    arr_val: &Vec<String>,
+    location: &str,
+    rotation: &str,
+) -> Option<Vec<VecItemsFind>> {
+    let mut vec_items_replace: Vec<VecItemsFind> = Vec::new();
+
+    let truck_id = match get_truck_id(&arr_val) {
+        Some(truck_id) => truck_id,
+        None => return None,
+    };
+
+    let vehicles_list_same_truck_id =
+        match get_player_vehicles_data_have_same_vehicle_id(arr_val, &truck_id.id) {
+            Some(vehicles_list_same_truck_id) => vehicles_list_same_truck_id,
+            None => return None,
+        };
+
+    for item in vehicles_list_same_truck_id.iter() {
+        vec_items_replace.push(VecItemsFind {
+            index: item.stored_vehicle_placement_index,
+            value: format!(" stored_vehicle_placement: {} {}", location, rotation),
+        });
+
+        if item.trailer_placements.len() > 1 {
+            for (i, trailer_item) in item.trailer_placements.iter().enumerate() {
+                if i == 0 {
+                    continue;
+                }
+                vec_items_replace.push(VecItemsFind {
+                    index: trailer_item.index,
+                    value: format!(
+                        " stored_trailer_placements[{}]: {} {}",
+                        i - 1,
+                        location,
+                        rotation
+                    ),
+                });
+            }
+
+            vec_items_replace.push(VecItemsFind {
+                index: item.stored_trailer_attached_index,
+                value: format!(" stored_trailer_attached: true"),
+            });
+        }
+    }
+
+    if vec_items_replace.is_empty() {
+        return None;
+    }
+
+    return Some(vec_items_replace);
 }

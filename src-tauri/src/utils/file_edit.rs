@@ -2,7 +2,7 @@ use super::decrypt_saves::decrypt_file;
 use crate::structs::file_path::FilePath;
 use crate::structs::vec_save_games::{VecProfileDir, VecSaveGames};
 use hex::decode;
-use std::fs::{read_dir, rename, write, File};
+use std::fs::{File, read_dir, rename, write};
 use std::io::Read;
 use std::path::Path;
 use uuid::Uuid;
@@ -262,7 +262,9 @@ pub async fn get_list_save_game_dirs(path: String) -> Option<Vec<VecProfileDir>>
             Err(_) => continue,
         };
 
+        let uuid: String = Uuid::new_v4().to_string();
         result.push(VecProfileDir {
+            id: uuid,
             name: profile_path_name,
             hex: profile_path_hex.to_string(),
             dir: item_path,
@@ -413,4 +415,29 @@ pub async fn set_convoy_mode_status(path: &str, status: bool) -> Option<Vec<Stri
     }
 
     return Some(file);
+}
+
+pub async fn get_save_camera(path: &str) -> Option<(String, String)> {
+    let file: Vec<String> = match file_split_space(path).await {
+        Some(file) => file,
+        None => return None,
+    };
+
+    let file_len: usize = file.len();
+    if file.is_empty() || file_len < 2 {
+        return None;
+    }
+
+    let last_item: String = file[file_len - 2].to_string();
+    let remove_spaces: String = last_item.replace(" ", "");
+    let split: Vec<&str> = remove_spaces.split(";").collect();
+
+    if split.len() < 3 {
+        return None;
+    }
+
+    let location = format!("({},{},{})", split[1], split[2], split[3]);
+    let rotation = format!("({};{},{},{})", split[4], split[5], split[6], split[7]);
+
+    return Some((location, rotation));
 }

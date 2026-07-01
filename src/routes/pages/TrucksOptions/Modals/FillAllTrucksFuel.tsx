@@ -1,19 +1,26 @@
 import { useState, useContext } from "react";
-import { ProfileContex } from "@/hooks/useProfileContex";
+
+// UI
+import { useDisclosure } from "@heroui/use-disclosure";
+import { Button } from "@heroui/button";
+import { Divider } from "@heroui/divider";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	useDisclosure,
-} from "@nextui-org/react";
-import { setAllFuelTruck } from "@/utils/fileEdit";
+} from "@heroui/modal";
 import AlertSave from "@/components/AlertSave";
 
-// icons
+// Hooks
+import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Utils
+import { setAllFuelTruck } from "@/utils/fileEdit";
+
+// Icons
 import { IconPencil, IconGasStation } from "@tabler/icons-react";
 
 interface completedProps {
@@ -23,6 +30,9 @@ interface completedProps {
 
 const FillAllTrucksFuel = () => {
 	const { selectedSave } = useContext(ProfileContex);
+	const { translations } = useContext(LocaleContext);
+	const { trucks } = translations.menu_options;
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [completed, setCompleted] = useState<completedProps>({
@@ -55,11 +65,11 @@ const FillAllTrucksFuel = () => {
 				color="primary"
 				variant="shadow"
 			>
-				Open
+				{trucks.fill_all_trucks_fuel.modal.btn_open}
 			</Button>
 			<Modal
 				hideCloseButton
-				size="sm"
+				size="md"
 				backdrop="blur"
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
@@ -69,18 +79,16 @@ const FillAllTrucksFuel = () => {
 					{(onClose) => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">
-								Fill all trucks fuel
+								{trucks.fill_all_trucks_fuel.modal.title}
 							</ModalHeader>
 							<Divider />
 							<ModalBody className="py-1">
-								<p>
-									This option will allow you to refuel all your purchased trucks
-								</p>
+								<p>{trucks.fill_all_trucks_fuel.modal.description}</p>
 								<AlertSave
 									message={
 										completed.error
-											? "An error occurred in the process"
-											: "Saved successfully"
+											? translations.components.alert_on_save_default.error
+											: translations.components.alert_on_save_default.succes
 									}
 									error={completed.error}
 									show={completed.completed}
@@ -91,7 +99,7 @@ const FillAllTrucksFuel = () => {
 							</ModalBody>
 							<ModalFooter>
 								<Button color="danger" variant="light" onPress={onClose}>
-									Close
+									{trucks.fill_all_trucks_fuel.modal.btn_close}
 								</Button>
 								<Button
 									endContent={<IconGasStation />}
@@ -99,7 +107,7 @@ const FillAllTrucksFuel = () => {
 									color="success"
 									onPress={onClickApply}
 								>
-									Refuel
+									{trucks.fill_all_trucks_fuel.modal.btn_apply}
 								</Button>
 							</ModalFooter>
 						</>

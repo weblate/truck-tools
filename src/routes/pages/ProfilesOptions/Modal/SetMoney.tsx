@@ -1,20 +1,27 @@
 import { useState, useContext } from "react";
-import { ProfileContex } from "@/hooks/useProfileContex";
+
+// UI
+import { useDisclosure } from "@heroui/use-disclosure";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Divider } from "@heroui/divider";
 import {
 	Modal,
 	ModalContent,
 	ModalHeader,
-	Divider,
 	ModalBody,
 	ModalFooter,
-	Button,
-	useDisclosure,
-	Input,
-} from "@nextui-org/react";
-import { setProfileMoney } from "@/utils/fileEdit";
+} from "@heroui/modal";
 import AlertSave from "@/components/AlertSave";
 
-// icons
+// Hooks
+import { ProfileContex } from "@/hooks/useProfileContex";
+import { LocaleContext } from "@/hooks/useLocaleContext";
+
+// Utils
+import { setProfileMoney } from "@/utils/fileEdit";
+
+// Icons
 import {
 	IconPencil,
 	IconCurrencyEuro,
@@ -28,6 +35,9 @@ interface completedProps {
 
 const SetMoney = () => {
 	const { selectedSave } = useContext(ProfileContex);
+	const { translations } = useContext(LocaleContext);
+	const { add_money } = translations.menu_options.profile;
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const [money, setMoney] = useState<string>("70000000");
@@ -71,7 +81,7 @@ const SetMoney = () => {
 				color="primary"
 				variant="shadow"
 			>
-				Open
+				{add_money.modal.btn_open}
 			</Button>
 			<Modal
 				hideCloseButton
@@ -85,17 +95,17 @@ const SetMoney = () => {
 					{(onClose) => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">
-								Add money
+								{add_money.modal.title}
 							</ModalHeader>
 							<Divider />
 							<ModalBody className="py-1">
-								<p>Add the amount of money you want in your profile</p>
+								<p>{add_money.modal.description}</p>
 								<Input
 									className="mt-1"
 									startContent={<IconCurrencyEuro />}
 									isInvalid={money === ""}
-									label="Money"
-									placeholder="Enter the amount of money in EUR"
+									label={add_money.modal.input_money.label}
+									placeholder={add_money.modal.input_money.placeholder}
 									value={money}
 									onValueChange={(value) => setMoneyNumbers(value)}
 									variant="bordered"
@@ -103,8 +113,8 @@ const SetMoney = () => {
 								<AlertSave
 									message={
 										completed.error
-											? "An error occurred in the process"
-											: "Saved successfully"
+											? translations.components.alert_on_save_default.error
+											: translations.components.alert_on_save_default.succes
 									}
 									error={completed.error}
 									show={completed.completed}
@@ -115,7 +125,7 @@ const SetMoney = () => {
 							</ModalBody>
 							<ModalFooter>
 								<Button color="danger" variant="light" onPress={onClose}>
-									Close
+									{add_money.modal.btn_close}
 								</Button>
 								<Button
 									endContent={<IconCreditCardPay />}
@@ -123,7 +133,7 @@ const SetMoney = () => {
 									color="success"
 									onPress={onClickApply}
 								>
-									Add
+									{add_money.modal.btn_apply}
 								</Button>
 							</ModalFooter>
 						</>
